@@ -11,13 +11,22 @@ def read_file(filename):
     fp.close()
     return word_list
     
+def count_word_print(target,word_list,start,end):
+    count=0
+    same_list=[]
+    for i in range(start,end+1):
+        if word_list[i].split()[0].lower() == target:
+            count+=1
+            same_list.append(word_list[i])
+    print "Found %d items"%count
+    for j in range(0,len(same_list)):
+        print same_list[j]
+
 
 
 ## binary search
-def find1(target,word_list,start,end,count):
+def find1(target,word_list,start,end):
     if start > end:
-        if count != 0:
-            return 0
         if end<=0:
             print "Not found"
             return -1
@@ -30,11 +39,12 @@ def find1(target,word_list,start,end,count):
         middle=(start+end)/2
         word=word_list[middle].split()[0].lower()
         if word == target.lower():
+            count_word_print(word,word_list,start,end)
             return middle 
         elif word > target.lower():
-            return find1(target,word_list,start,middle-1,count)
+            return find1(target,word_list,start,middle-1)
         else:
-            return find1(target,word_list,middle+1,end,count)
+            return find1(target,word_list,middle+1,end)
         
 
 
@@ -42,7 +52,6 @@ if __name__ == "__main__":
     args=''
     subcommand=''
     word_list=[]
-    word_index=[]
     while True:
         args=raw_input("$ ")
        
@@ -56,19 +65,7 @@ if __name__ == "__main__":
             if not len(args.split())==2:
                 print "Please, input word"
                 continue
-            copy_list=word_list[:]
-            find_items=[]
-            count=0
-            word_index=find1(subcommand,copy_list,0,len(copy_list)-1,count)
-            while copy_list[word_index].split()[0].lower()==subcommand.lower():
-                find_items.append(copy_list[word_index])
-                del copy_list[word_index]
-                count+=1
-                word_index=find1(subcommand,copy_list,0,len(copy_list)-1,count)
-            if not count==0:
-                print "Found %d items"%count
-                for i in range(0,len(find_items)):
-                    print find_items[i]                
+            word_index=find1(subcommand,word_list,0,len(word_list)-1)
         if command=="read":
             if not len(args.split())==2:
                 print "Please, input filename"
